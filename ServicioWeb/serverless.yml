@@ -1,0 +1,103 @@
+service: myserverlessEsp
+
+provider:
+    name: aws
+    runtime: nodejs12.x
+    profile: serverlessUser
+    region: us-east-1
+    environment:
+        tableName: ${self:custom.tableName}
+        tableConfig: ${self:custom.tableConfig}
+        tableData: ${self:custom.tableData}
+    iamRoleStatements:
+        - Effect: Allow
+          Action:
+              - dynamodb:*
+          Resource: '*'
+
+custom:
+    tableName: WebsocketUsers
+    tableConfig: WebsocketConfig
+    tableData: WebsocketData
+
+functions:
+    websocket-connect:
+        handler: lambdas/websockets/connect.handler
+        events:
+            - websocket:
+                  route: $connect
+    websocket-disconnect:
+        handler: lambdas/websockets/disconnect.handler
+        events:
+            - websocket:
+                  route: $disconnect
+    websocket-default:
+        handler: lambdas/websockets/default.handler
+        events:
+            - websocket:
+                  route: $default
+    websocket-message:
+        handler: lambdas/websockets/message.handler
+        events:
+            - websocket:
+                  route: message
+    websocket-config:
+        handler: lambdas/websockets/config.handler
+        events:
+            - websocket:
+                  route: config
+    websocket-data:
+        handler: lambdas/websockets/data.handler
+        events:
+            - websocket:
+                route: data
+    websocket-control:
+        handler: lambdas/websockets/control.handler
+        events:
+            - websocket:
+                route: control
+
+resources:
+    Resources:        
+        WebsocketUserTable:
+            Type: AWS::DynamoDB::Table
+            Properties:
+                TableName: ${self:custom.tableName}
+                AttributeDefinitions:
+                    - AttributeName: ID
+                      AttributeType: S
+                KeySchema:
+                    - AttributeName: ID
+                      KeyType: HASH
+                BillingMode: PAY_PER_REQUEST        
+        WebsocketConfigTable:
+            Type: AWS::DynamoDB::Table
+            Properties:
+                TableName: ${self:custom.tableConfig}
+                AttributeDefinitions:
+                    - AttributeName: ID
+                      AttributeType: S                       
+                    - AttributeName: sortKey
+                      AttributeType: N
+                KeySchema:
+                    - AttributeName: ID
+                      KeyType: HASH
+                    - AttributeName: sortKey
+                      KeyType: RANGE
+                BillingMode: PAY_PER_REQUEST
+        WebsocketDataTable:
+            Type: AWS::DynamoDB::Table
+            Properties:
+                TableName: ${self:custom.tableData}
+                AttributeDefinitions:
+                    - AttributeName: ID
+                      AttributeType: S                       
+                    - AttributeName: sortKey
+                      AttributeType: N
+                KeySchema:
+                    - AttributeName: ID
+                      KeyType: HASH
+                    - AttributeName: sortKey
+                      KeyType: RANGE
+                BillingMode: PAY_PER_REQUEST
+      
