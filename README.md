@@ -1,4 +1,4 @@
-✨ feat: análisis avanzado del comportamiento de la compuerta radial en central hidroeléctrica 🌊⚙️
+✨ Implementación de análisis avanzado del comportamiento de la compuerta radial 🌊⚙️
 
 - 🚀 Implementación inicial del sistema de análisis de compuerta radial.
 - 📊 Integración de modelos físicos y matemáticos para simular flujo y presión.
