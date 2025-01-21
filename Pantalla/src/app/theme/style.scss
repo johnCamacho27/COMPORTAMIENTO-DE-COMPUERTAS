@@ -1,0 +1,29 @@
+@import 'style/variables';
+@import 'style/transitions';
+@import 'style/breakpoints';
+@import 'style/rtl';
+@import 'style/badge';
+@import 'style/scrollbar';
+
+@import 'style/reboot';
+@import 'style/misc';
+
+@import 'style/colors';
+
+.apexcharts-tooltip {
+  background: #f3f3f3;
+  color: rgb(114, 114, 114);
+}
+
+.mat-slider-thumb-label {
+  transform: rotate(45deg) !important;
+  border-radius: 50% 50% 0 !important;
+}
+
+.mat-slider-thumb {
+  transform: scale(0) !important;
+}
+
+.mat-slider-thumb-label-text {
+  opacity: 1 !important;
+}

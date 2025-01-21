@@ -1,0 +1,302 @@
+<page-header></page-header>
+
+<div class="matero-row" fxLayout="row wrap">
+
+
+  <div class="matero-col" fxFlex.gt-sm="50" fxFlex="100">
+    <mat-card>
+      <mat-card-subtitle>Estado elementos</mat-card-subtitle>
+      <mat-list>
+        <mat-list-item *ngFor="let message of messages; let i = index">
+
+          <img matListAvatar [src]="message.img" alt="">
+
+          <h3 matLine> {{message.subject}} </h3>
+
+          <p matLine>
+            <small class="text-muted"> {{message.content}} </small>
+          </p>
+
+          <mat-chip [class]="message.state_cl" selected="false">{{ message.state }} </mat-chip>
+
+          <span [matBadge]=motor
+                matBadgeColor="accent"
+                *ngIf="i === 3 && motor === 1"
+                mat-raised-button matTooltip="Motor#"></span>
+          <span [matBadge]=motor
+                matBadgeColor="accent"
+                *ngIf="i === 3 && motor === 2"
+                mat-raised-button matTooltip="Motor#"></span>
+
+          <mat-divider></mat-divider>
+
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+  </div>
+
+  <div class="matero-col" fxFlex.gt-sm="50" fxFlex="100" >
+
+    <mat-card [ngClass]="['text-white', stats.color_stc]">
+      <mat-card-title class="f-s-12 f-w-100">{{ stats.title_tsc }}</mat-card-title>
+        <mat-card-content>
+
+          <mat-form-field>
+            <mat-label>Apertura de Compuerta de 0 a 100</mat-label>
+            <input  matInput
+                    type="number"
+                    min="0"
+                    max="100"
+                    maxlength="3"
+                    title="0 - 100 %"
+                    [(ngModel)]="value"
+                    (ngModelChange)="value"
+                    [disabled] = "active">
+
+          </mat-form-field>
+          &nbsp; &nbsp;
+          <button mat-raised-button
+                  class="bg-green-500 text-white"
+                  (click)="start()"
+                  [disabled]=active>Iniciar</button>
+          &nbsp; &nbsp;
+          <button mat-raised-button color="warn"
+                  (click)="stop()"
+                  [disabled]=!active>Parar Acción</button>
+
+        <section>
+          <mat-card [ngClass]="['text-white', stats.color_sc]"
+                    class="">
+            <div id="chart1"></div>
+          </mat-card>
+        </section>
+
+        <mat-chip-list>
+          Estado de Compuerta:
+          <mat-chip class="f-s-12 f-w-20 bg-cyan-500"
+                    *ngIf="compuertaRadial === 0" selected>Detenida</mat-chip>
+          <mat-chip class="f-s-12 f-w-20 bg-green-500"
+                    *ngIf="compuertaRadial === 1" selected>Abriendo</mat-chip>
+          <mat-chip class="f-s-12 f-w-20 bg-orange-500"
+                    *ngIf="compuertaRadial === 2" selected>Cerrando</mat-chip>
+          <mat-chip class="f-s-12 f-w-20 bg-red-500"
+                    *ngIf="compuertaRadial === 3" selected>Error</mat-chip>
+        </mat-chip-list>
+
+
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+
+
+</div>
+
+<small class="text-muted">Fecha: {{ time | async }}.</small>
+
+<br><br><br>
+
+<div class="matero-row" fxLayout="row wrap">
+
+
+  <!-- Statistics -->
+  <div class="matero-col" fxFlex.gt-sm="70" fxFlex.gt-xs="100" fxFlex="100" >
+
+    <mat-card [ngClass]="['text-white', 'bg-cyan-800']">
+      <mat-card-title>Configuracion de Modulo</mat-card-title>
+
+      <form [formGroup]="form2" (ngSubmit)="submit2()">
+        <formly-form  [model]="model2"
+                      [fields]="fields2"
+                      [options]="options2"
+                      [form]="form2">
+        </formly-form>
+        <button mat-raised-button
+                class="bg-light-green-900"
+                [disabled]="!form2.valid">Guardar</button>
+      </form>
+    </mat-card>
+
+  </div>
+
+  <!-- Statistics -->
+  <div class="matero-col light-green-50" fxFlex.gt-sm="30" fxFlex.gt-xs="100" fxFlex="100" >
+    <mat-card [ngClass]="['text-white', 'bg-blue-gray-500']">
+      <mat-card-title>Configuracion de Parametros</mat-card-title>
+
+      <form [formGroup]="form1" (ngSubmit)="submit1()">
+        <formly-form [model]="model1" [fields]="fields1" [options]="options1" [form]="form1">
+        </formly-form>
+        <button mat-raised-button color="primary" [disabled]="!form1.valid">Submit</button>
+      </form>
+    </mat-card>
+  </div>
+
+</div>
+
+<div class="matero-row" fxLayout="row wrap">
+  <!-- Charts Graphics -->
+  <div class="matero-col" fxFlex="100" fxFlex.gt-sm="100">
+
+    <mat-card>
+
+
+
+    <h1>Historial de Comportamiento de Compuerta Radial</h1>
+    <!-- Panel Configuration -->
+    <form [formGroup]="group">
+      <div class="matero-row" fxLayout="row wrap">
+
+        <mat-form-field>
+          <mat-placeholder>Fecha y Hora</mat-placeholder>
+          <mat-datetimepicker-toggle [for]="datetimePicker" matSuffix></mat-datetimepicker-toggle>
+          <mat-datetimepicker #datetimePicker
+                              [openOnFocus]="true"
+                              startView="month"
+                              [timeInterval]="5"
+                              type="datetime"></mat-datetimepicker>
+          <input [matDatetimepicker]="datetimePicker" [max]="tomorrow" [min]="today"
+                  autocomplete="false" formControlName="dateTime" matInput required>
+          <mat-error *ngIf="group.get('dateTime').errors?.required">
+            {{'validations.required' | translate}}
+          </mat-error>
+          <mat-error *ngIf="group.get('dateTime').errors?.matDatepickerMin">min</mat-error>
+          <mat-error *ngIf="group.get('dateTime').errors?.matDatepickerMax">max</mat-error>
+        </mat-form-field>
+
+        <button mat-mini-fab (click)="getHistorico()"
+            aria-label="Mini floating action button to increase the button counter by 1">
+          <mat-icon>search</mat-icon>
+        </button>
+
+      </div>
+    </form>
+
+      <mat-card-subtitle>Compuerta</mat-card-subtitle>
+      <div id="chart">
+        <apx-chart
+          [series]="optionsHC.series"
+          [chart]="optionsHC.chart"
+          [xaxis]="optionsHC.xaxis"
+          [stroke]="optionsHC.stroke"
+          [colors]="optionsHC.colors"
+          [dataLabels]="optionsHC.dataLabels"
+          [legend]="optionsHC.legend"
+          [markers]="optionsHC.markers"
+          [grid]="optionsHC.grid"
+          [yaxis]="optionsHC.yaxis"
+          [title]="optionsHC.title"
+        ></apx-chart>
+      </div>
+    </mat-card>
+
+  </div>
+</div>
+
+
+<div class="matero-row" fxLayout="row wrap">
+
+  <!-- Charts Graphics -->
+  <div class="matero-col" fxFlex="100" fxFlex.gt-sm="70">
+
+
+
+
+
+
+    <mat-card>
+      <mat-card-subtitle>Historial de Estado de Elementos</mat-card-subtitle>
+
+      <apx-chart
+        [chart]="chart1options.chart"
+        [colors]="chart1options.colors"
+        [dataLabels]="commonOptions.dataLabels"
+        [grid]="commonOptions.grid"
+        [markers]="commonOptions.markers"
+        [series]="chart1options.series"
+        [stroke]="commonOptions.stroke"
+        [tooltip]="commonOptions.tooltip"
+        [xaxis]="commonOptions.xaxis"
+        [yaxis]="chart1options.yaxis"
+      ></apx-chart>
+      <apx-chart
+        [series]="chart2options.series"
+        [chart]="chart2options.chart"
+        [colors]="chart2options.colors"
+        [yaxis]="chart2options.yaxis"
+        [dataLabels]="commonOptions.dataLabels"
+        [markers]="commonOptions.markers"
+        [stroke]="commonOptions.stroke"
+        [grid]="commonOptions.grid"
+        [xaxis]="commonOptions.xaxis"
+        [tooltip]="commonOptions.tooltip"
+      ></apx-chart>
+      <apx-chart
+        [series]="chart3options.series"
+        [chart]="chart3options.chart"
+        [colors]="chart3options.colors"
+        [yaxis]="chart3options.yaxis"
+        [dataLabels]="commonOptions.dataLabels"
+        [markers]="commonOptions.markers"
+        [stroke]="commonOptions.stroke"
+        [grid]="commonOptions.grid"
+        [xaxis]="commonOptions.xaxis"
+        [tooltip]="commonOptions.tooltip"
+      ></apx-chart>
+
+    </mat-card>
+  </div>
+
+  <div class="matero-col" fxFlex="100" fxFlex.gt-sm="30">
+    <mat-card>
+      <mat-card-subtitle>Alarmas</mat-card-subtitle>
+
+      <apx-chart
+        [series]="chartA1options.series"
+        [chart]="chart1options.chart"
+        [colors]="chartA1options.colors"
+        [yaxis]="chartA1options.yaxis"
+        [dataLabels]="commonOptions.dataLabels"
+        [markers]="commonOptions.markers"
+        [stroke]="commonOptions.stroke"
+        [grid]="commonOptions.grid"
+        [xaxis]="commonOptions.xaxis"
+        [tooltip]="commonOptions.tooltip"
+      ></apx-chart>
+      <apx-chart
+        [series]="chartA2options.series"
+        [chart]="chartA2options.chart"
+        [colors]="chartA2options.colors"
+        [yaxis]="chartA2options.yaxis"
+        [dataLabels]="commonOptions.dataLabels"
+        [markers]="commonOptions.markers"
+        [stroke]="commonOptions.stroke"
+        [grid]="commonOptions.grid"
+        [xaxis]="commonOptions.xaxis"
+        [tooltip]="commonOptions.tooltip"
+      ></apx-chart>
+      <apx-chart
+        [series]="chartA3options.series"
+        [chart]="chartA3options.chart"
+        [colors]="chartA3options.colors"
+        [yaxis]="chartA3options.yaxis"
+        [dataLabels]="commonOptions.dataLabels"
+        [markers]="commonOptions.markers"
+        [stroke]="commonOptions.stroke"
+        [grid]="commonOptions.grid"
+        [xaxis]="commonOptions.xaxis"
+        [tooltip]="commonOptions.tooltip"
+      ></apx-chart>
+
+
+
+    </mat-card>
+
+
+
+  </div>
+
+</div>
+
+

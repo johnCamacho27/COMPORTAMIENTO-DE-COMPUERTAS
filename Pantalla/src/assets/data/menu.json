@@ -1,0 +1,56 @@
+{
+  "menu": [
+    {
+      "route": "dashboard",
+      "name": "dashboard",
+      "type": "link",
+      "icon": "dashboard",
+      "badge": {
+        "color": "red-500",
+        "value": "5"
+      }
+    },
+    {
+      "route": "visor-control",
+      "name": "visor-control",
+      "type": "sub",
+      "icon": "chrome_reader_mode",
+      "children": [{
+          "route": "esp-one",
+          "name": "esp-one",
+          "type": "link"
+        },
+        {
+          "route": "esp-two",
+          "name": "esp-two",
+          "type": "link"
+        },
+        {
+          "route": "esp-three",
+          "name": "esp-three",
+          "type": "link"
+        },
+        {
+          "route": "esp-four",
+          "name": "esp-four",
+          "type": "link"
+        },
+        {
+          "route": "esp-five",
+          "name": "esp-five",
+          "type": "link"
+        },
+        {
+          "route": "esp-six",
+          "name": "esp-six",
+          "type": "link"
+        },
+        {
+          "route": "esp-seven",
+          "name": "esp-seven",
+          "type": "link"
+        }
+      ]
+    }
+  ]
+}
